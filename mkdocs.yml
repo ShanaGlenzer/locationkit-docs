@@ -1,5 +1,11 @@
 site_name: SocialRadar LocationKit
 pages:
-  - Home: index.md
+  - General: index.md
+  - iOS:
+    - 'Getting Started': ios/getting-started.md
+    - 'Using LocationKit': ios/using-locationkit.md
+  - Android:
+    - 'General': android/index.md
+  - Downloads: downloads/index.md
   - About: about.md
 theme: readthedocs
