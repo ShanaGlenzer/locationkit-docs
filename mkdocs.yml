@@ -1,1 +1,5 @@
 site_name: SocialRadar LocationKit
+pages:
+  - Home: index.md
+  - About: about.md
+theme: readthedocs
