@@ -8,4 +8,7 @@ pages:
     - 'General': android/index.md
   - Downloads: downloads/index.md
   - About: about.md
-theme: readthedocs
+theme: bootstrap
+markdown_extensions:
+  - toc:
+      permalink: True
