@@ -1,14 +1,16 @@
 site_name: SocialRadar LocationKit
 pages:
-  - General: index.md
+  - Home: index.md
   - iOS:
-    - 'Getting Started': ios/getting-started.md
-    - 'Using LocationKit': ios/using-locationkit.md
+    - 'Quickstart': ios/getting-started.md
+    - 'Usage': ios/using-locationkit.md
+    - 'API Reference': ios/api-reference.md
   - Android:
-    - 'General': android/index.md
-  - Downloads: downloads/index.md
+    - 'Quickstart': android/index.md
+  - HTTP:
+    - 'Quickstart': no-such-page.md
   - About: about.md
-theme: bootstrap
+theme: readthedocs
 markdown_extensions:
   - toc:
       permalink: True

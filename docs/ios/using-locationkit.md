@@ -1,12 +1,78 @@
-# Using LocationKit
+##1. Create an account
 
-Now that you've implemented LocationKit, you’re able to obtain location data on demand.
+The first thing you'll need to do is to [sign up for an account](http://developer.socialradar.com). This will generate your Developer Portal, and an API key.
 
-The location data you will receive is a CLLocation object returning a refined coordinate for the user’s current position.
+Within the Developer Portal, you will be able to find your API token, and find insights into the usage of your app with LocationKit.
 
-There are two methods of returning data: single point request and continuous streaming.
+***
 
-## Single Location Point Request
+##2. Install the SDK
+
+**CocoaPods**
+
+The easiest way to start using LocationKit in your project is by using [CocoaPods](https://cocoapods.org). Just add the following to the Podfile in your project, run `pod install`, and skip to [Configure your project](#configure-your-project):
+
+        pod 'LocationKit', '~> 2.0.0'
+
+**Download LocationKit.framework**
+
+Alternatively, you can [download the client library], unzip the file, and drag and drop the `LocationKit.framework` file into your project under Frameworks.
+
+***
+
+##3. Configure your project
+
+1. Link to the following libraries to your project:
+
+    | Libraries |
+    | - |
+    | AdSupport.framework |
+    | CoreLocation.framework |
+    | MapKit.framework |
+
+1. Enable **Location Updates** in the allowed **Background Modes**.
+
+![Background Modes](../img/background_modes.png)
+
+***
+
+##4. Configure permissions
+
+Add the following InfoPlist.strings file configuration (adjust the language as required by your app):
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>NSLocationUsageDescription</key>
+        <string>Change this line to inform the consumer about how location is being used.</string>
+        <key>NSLocationAlwaysUsageDescription</key>
+        <string>Change this line to inform the consumer about how location is being used in the background</string>
+    </dict>
+</plist>
+```
+***
+
+##5. Initialize and start LocationKit
+
+Include the LocationKit header in your app to get all the classes:
+
+```objective_c
+#import <LocationKit/LocationKit.h>
+```
+
+Enable LocationKit with the API token that you obtained earlier:
+
+```objective_c
+[LocationKit enableWithApiToken:@"your_api_token" andDelegate:nil];
+```
+
+LocationKit will now start collecting location data.
+
+***
+
+##6. Single Location Point Request
 
 To quickly obtain the user’s most recent location point, execute the following:
 
@@ -24,7 +90,7 @@ Single point requests do not increase battery consumption rates.
 
 You will quickly receive the user's most recent location point to the provided handler.
 
-## Streaming Update Frequency
+##7. Streaming Update Frequency
 
 Selecting the right update frequency when initiating streaming location tracking ensures the right algorithm is used to refine the GPS data.
 
@@ -44,9 +110,9 @@ In order to minimize battery usage, it is recommended that you enable the contin
 
 For example, for an app that tracks runs, start continuous updates when the user starts their run and stop when the user indicates their run is finished.
 
-## Start Streaming Location Data
+##8. Start Streaming Location Data
 
-> To start streaming location data, use the following (substitute the *SRFrequencyLevelMedium* with the activity tracking option you require):
+To start streaming location data, use the following (substitute the *SRFrequencyLevelMedium* with the activity tracking option you require):
 
 ```objective_c
 [LocationKit startLocationUpdatesWithFrequencyLevel:SRFrequencyLevelMedium updateHandler:^(CLLocation *location, NSError *error) {
@@ -60,9 +126,9 @@ For example, for an app that tracks runs, start continuous updates when the user
 
 Streaming location data is available when a continuous real-time feed of location data is required.
 
-## Stop Streaming Location Data
+##9. Stop Streaming Location Data
 
-> To stop streaming location data, use the following:
+To stop streaming location data, use the following:
 
 ```objective_c
 [LocationKit stopLocationUpdates];
@@ -70,9 +136,9 @@ Streaming location data is available when a continuous real-time feed of locatio
 
 Stopping activity tracking will not stop LocationKit -- it only stops the location tracking function that you have chosen. Note, only one location tracking function will operate at any time.
 
-## Single Venue List Request
+##10. Single Venue List Request
 
-> To retrieve a list of venues at the current location, use the following:
+To retrieve a list of venues at the current location, use the following:
 
 ```objective_c
 [LocationKit getCurrentVenuesWithHandler:^(NSArray *venues, NSError *error) {
@@ -93,9 +159,9 @@ Stopping activity tracking will not stop LocationKit -- it only stops the locati
 
 An SRVenue object contains the name, category and subcategory for a venue, in addition to its location and address information.  The address is represented as an NSDictionary.
 
-## Start Receiving Venue Updates
+##11. Start Receiving Venue Updates
 
-> To start receiving venue updates, use the following:
+To start receiving venue updates, use the following:
 
 ```objective_c
 [LocationKit startVenueUpdatesWithHandler:^(NSArray *venues, NSError *error) {
@@ -114,9 +180,9 @@ An SRVenue object contains the name, category and subcategory for a venue, in ad
 
 Venue updates will be sent when LocationKit detects that a user has entered a new venue, so there is no frequency setting as with location updates.
 
-## Stop Receiving Venue Updates
+##12. Stop Receiving Venue Updates
 
-> To stop receiving venue updates, use the following:
+To stop receiving venue updates, use the following:
 
 ```objective_c
 [LocationKit stopVenueUpdates];
@@ -124,7 +190,7 @@ Venue updates will be sent when LocationKit detects that a user has entered a ne
 
 Stopping venue updates will not stop LocationKit -- it only stops receiving venue updates.
 
-## Venue Object
+##13. Venue Object
 
 Venue objects as returned with `getCurrentVenuesWithHandler` or `startVenueUpdatesWithHandler` have the following properties:
 
