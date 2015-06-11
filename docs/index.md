@@ -1,5 +1,7 @@
 ## SocialRadar LocationKit
 
+![LocationKit](img/locationkit.png)
+
 LocationKit is designed to provide accurate location data to apps which require precise or continuous location services, passive venue check-in and detailed user insights based on the places your users go every day.
 
 ### How it works
