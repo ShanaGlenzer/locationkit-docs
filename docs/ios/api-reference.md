@@ -6,7 +6,7 @@
 
 ``+ (LocationKit *)enableWithApiToken:(NSString *)token andDelegate:(id <LocationKitDelegate>)delegate``
 
-Enables LocationKit using an API token retrieved from the [developer portal](http://developer.socialradar.com). Optionally, you can specify an object that implements the [LocationKitDelegate](#locationkitdelegate) protocol; otherwise specify `nil`.
+Enables LocationKit using an API token retrieved from the [developer portal](https://developer.socialradar.com). Optionally, you can specify an object that implements the [LocationKitDelegate](#locationkitdelegate) protocol; otherwise specify `nil`.
 
 **Arguments**
 
@@ -79,7 +79,9 @@ This protocol should be implemented on a delegate object.
 
 ``- (void)locationKit:(LocationKit *)locationKit didUpdateLocation:(CLLocation *)location``
 
-Update location? No idea. Please halp.
+Any time we detect a new location, this method will be called on the delegate object.
+
+*Unlike the Apple location manager's `didUpdateLocation` method, this will not provide a constant stream of location updates if the device is not moved. LocationKit will provide you with a more relevant set of location updates instead.*
 
 **Arguments**
 
@@ -97,13 +99,13 @@ Update location? No idea. Please halp.
 
 ``- (void)locationKit:(LocationKit *)locationKit didEndVisit:(LKVisit *)visit``
 
-Ended visit?
+This method is called on the delegate when it detects that a visit to a place has ended.
 
 **Arguments**
 
 | Argument | Description |
 | --- | --- |
-| *visit* | The visit that ended. |
+| *visit* | The [visit](#lkvisit) that ended. |
 
 **Return value**
 
