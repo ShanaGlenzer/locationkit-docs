@@ -26,9 +26,17 @@ Alternatively, you can [download the client library], unzip the file, and drag a
 
     | Libraries |
     | - |
-    | AdSupport.framework |
     | CoreLocation.framework |
     | MapKit.framework |
+
+
+**AdSupport (optional)**
+
+Optionally, you can link the `AdSupport.framework` library and, if present, we can use the Apple advertising identifier to identify the device. This is useful particularly if you have other apps or other, more general analytics platforms in which you'd like to cross reference location data your app will gather from LocationKit. Without the AdSupport framework it may not be possible to link data with some of those other sources if you run a report from our Developer Portal.
+
+In the past, Apple has [rejected some apps which use the AdSupport framework](http://techcrunch.com/2014/02/03/apples-latest-crackdown-apps-pulling-the-advertising-identifier-but-not-showing-ads-are-being-rejected-from-app-store/) (particularly the IDFA, the identifier for advertisers) without serving advertisements hence why this framework is optional.
+
+Under the hood, we look to see if this framework is present and use the correct identifier in all cases.
 
 1. Enable **Location Updates** in the allowed **Background Modes**.
 
@@ -184,6 +192,8 @@ This delegate method will receive an LKVisit object which contains information a
           visit.place.venue.name);
 }
 ```
+
+***
 
 ## Control mechanisms
 
