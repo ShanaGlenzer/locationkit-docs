@@ -17,7 +17,7 @@ The LocationKit framework works independently of the host app, and other than th
 
 ### Battery Consumption Safeguards
 
-Battery consumption is extremely efficient – LocationKit averages 1.7% battery consumption per hour, depending on the type of device used. If remaining battery power dips below 21%, LocationKit pauses until the battery has been charged.
+Battery consumption is extremely efficient – LocationKit averages 1.7% battery consumption per hour, depending on the type of device used. We will quantify this in greater detail later!
 
 ### Transparent operation
 
@@ -29,11 +29,15 @@ LocationKit never surfaces dialog boxes, errors or notifications directly to a c
 
 #### CocoaPods
 
-Coming soon!
+Add the following to your Podfile then just run `pod install` from the root of your project
+
+```
+pod 'LocationKit', '>= 2.0.0'
+```
 
 #### Manual Download
 
-Please contact the LocationKit team on [locationkit@socialradar.com](mailto:locationkit@socialradar.com) to obtain an API key and a copy of LocationKit.
+We do not yet have LocationKit available for manual download. If you are unable to use the CocoaPod and need a `.framework`, please contact the LocationKit team at [locationkit@socialradar.com](mailto:locationkit@socialradar.com) and we will send you the file.
 
 ### Android
 

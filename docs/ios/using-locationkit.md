@@ -1,8 +1,8 @@
 ##1. Create an account
 
-The first thing you'll need to do is to [sign up for an account](http://developer.socialradar.com). This will generate your Developer Portal, and an API key.
+The first thing you'll need to do is to [sign up for an account](http://developer.socialradar.com/#/signup). This will generate your Developer Portal account, and generate your API token.
 
-Within the Developer Portal, you will be able to find your API token, and find insights into the usage of your app with LocationKit.
+Within the Developer Portal, you will be able to find your API token, and find insights into the location-based usage of your app with LocationKit.
 
 ***
 
@@ -65,14 +65,18 @@ Include the LocationKit header in your app to get all the classes:
 Enable LocationKit with the API token that you obtained earlier:
 
 ```objective_c
-[LocationKit enableWithApiToken:@"your_api_token" andDelegate:nil];
+[LocationKit startWithApiToken:@"your_api_token" andDelegate:nil];
 ```
 
 LocationKit will now start collecting location data.
 
+Optionally you can provide a `LocationKitDelegate` which will receive a constant stream of updates as they come in. Here we have supplied a `nil`. More on that below.
+
 ***
 
-##6. Single Location Point Request
+## Single Location Requests
+
+### > Location Point
 
 To quickly obtain the user’s most recent location point, execute the following:
 
@@ -86,128 +90,119 @@ To quickly obtain the user’s most recent location point, execute the following
 }];
 ```
 
-Single point requests do not increase battery consumption rates.
+Single point requests do not increase battery consumption rates. Notice this point is simply a `CLLocation` so if your code currently uses the Apple Location Manager, this will return an item in the same format. Here are the [Apple docs on CLLocation](https://developer.apple.com/library/ios/documentation/CoreLocation/Reference/CLLocation_Class/index.html)
 
 You will quickly receive the user's most recent location point to the provided handler.
 
-##7. Streaming Update Frequency
+### > Place
 
-Selecting the right update frequency when initiating streaming location tracking ensures the right algorithm is used to refine the GPS data.
-
-If you’re unsure which frequency to use, choose **SRFrequencyLevelMedium** – this will provide accurate GPS data useful for most tracking requirements.
-
-The **SRFrequencyLevel** defines the frequency with which you wish to update. Each type is optimized for processing speed, battery life and accuracy. The update frequencies offered are:
-
-* **SRFrequencyLevelLowest** – suitable for continuous very low power GPS signaling (3.3%/hour on average). New location signals will arrive every 1-2 seconds when moving, less frequently if not moving.
-* **SRFrequencyLevelLow** — suitable for general fitness, sports, and walking <15mph.
-* **SRFrequencyLevelMedium** – tracking for activity speeds <25mph.
-* **SRFrequencyLevelHigh** – tracking for speeds <40mph on land and water.
-* **SRFrequencyLevelHighest** – automotive tracking with ‘snap-to-road’.
-
-The location object will update as new location data becomes available. This data will include both highly refined and lightly refined data points suitable for mapping an activity.
-
-In order to minimize battery usage, it is recommended that you enable the continuous stream only for the period your app needs that type of GPS update and disable it when that is no longer needed.
-
-For example, for an app that tracks runs, start continuous updates when the user starts their run and stop when the user indicates their run is finished.
-
-##8. Start Streaming Location Data
-
-To start streaming location data, use the following (substitute the *SRFrequencyLevelMedium* with the activity tracking option you require):
+To request the user's current place:
 
 ```objective_c
-[LocationKit startLocationUpdatesWithFrequencyLevel:SRFrequencyLevelMedium updateHandler:^(CLLocation *location, NSError *error) {
+[LocationKit getCurrentPlaceWithHandler:^(LKPlace *place, NSError *error) {
     if (error == nil) {
-        NSLog(@"Activity location %@", location);
+        NSLog(@"The user is in %@", place.address.locality);
     } else {
-        NSLog(@"Activity error %@", error);
+        NSLog(@"Venues error %@", error);
     }
 }];
 ```
 
-Streaming location data is available when a continuous real-time feed of location data is required.
+This will return an LKPlace object. This place includes data about the user's current location.
 
-##9. Stop Streaming Location Data
+An LKPlace object consists of the address for the user's current location along with the venue they are in, if they are at a business. *(see the [Object Model](object-model.md) docs for more details)*
 
-To stop streaming location data, use the following:
+If they are in a place with no address or venue, both will be `nil` so plan your code accordingly. *(Note, currently we only have reliable support and coverage for addresses and venues in the United States.)*
 
-```objective_c
-[LocationKit stopLocationUpdates];
-```
+***
 
-Stopping activity tracking will not stop LocationKit -- it only stops the location tracking function that you have chosen. Note, only one location tracking function will operate at any time.
+## Streaming Updates
 
-##10. Single Venue List Request
+In order to receive streaming updates, you must provide an object which conforms to the [LocationKitDelegate](api-reference/#locationkitdelegate) protocol when launching LocationKit. LocationKit will then call the methods on your delegate whenever it detects the device has moved to a new location.
 
-To retrieve a list of venues at the current location, use the following:
+### > Location Updates
 
-```objective_c
-[LocationKit getCurrentVenuesWithHandler:^(NSArray *venues, NSError *error) {
-  if (error == nil) {
-      if(venues.count > 0) {
-          SRVenue *venue = venue[0];
-          NSLog(@"First Venue name %@", venue.name);
-      } else {
-          NSLog(@"No Venues found");
-      }
-  } else {
-      NSLog(@"Venues error %@", error);
-  }
-}];
-```
+As we detect the device moving to a new location and once we receive enough location data from the device to accurately determine the location of the device, we will call `didUpdateLocation` on your delegate.
 
-`getCurrentVenuesWithHandler` will retrieve an array of SRVenue objects at the current location.
-
-An SRVenue object contains the name, category and subcategory for a venue, in addition to its location and address information.  The address is represented as an NSDictionary.
-
-##11. Start Receiving Venue Updates
-
-To start receiving venue updates, use the following:
+So your delegate could have a method that looks like:
 
 ```objective_c
-[LocationKit startVenueUpdatesWithHandler:^(NSArray *venues, NSError *error) {
-  if (error == nil) {
-      if(venues.count > 0) {
-          SRVenue *venue = venue[0];
-          NSLog(@"First Venue name %@", venue.name);
-      } else {
-          NSLog(@"No Venues found");
-      }
-  } else {
-      NSLog(@"Venues error %@", error);
-  }
-}];
+- (void)locationKit:(LocationKit *)locationKit didUpdateLocation:(CLLocation *)location {
+    NSLog(@"The user has moved and their location is now (%.6f, %.6f)",
+          location.coordinate.latitude,
+          location.coordinate.longitude);
+}
 ```
 
-Venue updates will be sent when LocationKit detects that a user has entered a new venue, so there is no frequency setting as with location updates.
+Note, this behaves a bit differently from the Apple Location Manager's `didUpdateLocations`. At a high level, the differences are:
 
-##12. Stop Receiving Venue Updates
+ Apple | LocationKit
+ -------|------------
+ `didUpdateLocations` receives a constant stream of raw updates as it gets them from the GPS chip | `didUpdateLocation` takes the raw data and filters it to provide a single point with a higher degree of accuracy
+ Receives many data points as they come in raw from the GPS chip | Receives fewer, cleaned up and confirmed data points
+ Continues to be called constantly, even when the device has not moved | Is called only when a new location is detected by the device. This provides a significant battery optimization as code in this delegate method is executed only when the device is in a new location rather than being constantly executed.
+ Receives an array of points, sometimes with a varying degree of accuracy | Receives a single clean point
 
-To stop receiving venue updates, use the following:
+LocationKit's `didUpdateLocation` will continue to receive location updates while the app is in the background.
+
+If you have any further questions or confusion about this (or anything) please post about it on our [Community](https://community.socialradar.com) and someone from our staff will get back to you ASAP to clarify.
+
+### > Visit start
+
+When we detect a visit has started we will call the `didStartVisit` method on your LocationKitDelegate.
+
+We detect a visit start when we have gathered enough location data to identify:
+
+1. The location of the device
+1. That the user is visiting a place
+
+It will receive an LKVisit object which contains information on the time of arrival and the place to which this visit refers. For example:
 
 ```objective_c
-[LocationKit stopVenueUpdates];
+- (void)locationKit:(LocationKit *)locationKit didStartVisit:(LKVisit *)visit {
+    NSLog(@"LocationKit detected that a visit started at %@ to %@", visit.arrivalDate, visit.place.venue.name);
+}
+```
+Note, an LKVisit also has a property called `departureDate` which of course would be `nil` for in `didStartVisit` (because without a crystal ball we cannot determine when the user will leave at the time they arrive!).
+
+### > Visit end
+
+When we detect that a visit to a place has ended, we will call the `didEndVisit` method on your delegate.
+
+We are constantly tweaking the criteria to determine that a visit has ended, so this may change slightly, but generally we determine that a visit has ended when:
+
+1. We detect that another visit has started or
+1. We detect that the device has moved far enough away from the place that they are no longer there.
+
+This delegate method will receive an LKVisit object which contains information about the time of arrival, departure, and the place to which that visit refers. For example:
+
+```objective_c
+- (void)locationKit:(LocationKit *)locationKit didEndVisit:(LKVisit *)visit {
+    NSLog(@"LocationKit detected that a visit occurred from %@ to %@ at %@",
+          visit.arrivalDate,
+          visit.departureDate,
+          visit.place.venue.name);
+}
 ```
 
-Stopping venue updates will not stop LocationKit -- it only stops receiving venue updates.
+## Control mechanisms
 
-##13. Venue Object
+###  > Pausing LocationKit
 
-Venue objects as returned with `getCurrentVenuesWithHandler` or `startVenueUpdatesWithHandler` have the following properties:
+To pause LocationKit and stop receiving locations and visits, run the following:
 
-Property | Type | Description
---------- | --------- | ---------
-locationCoordinate | CLLocationCoordinate2D | Coordinates of the venue
-addressDictionary | NSDictionary | Address of the venue
-name | NSString | Name of the venue
-category | NSString | Category of the venue
-subcategory | NSString | Subcategory of the venue
+```objective_c
+[LocationKit pause];
+```
 
-Below are the keys in `addressDictionary`:
+Pausing LocationKit will prevent you from receiving any further updates to locations, places, visits, and so on so do so sparingly. It will prevent LocationKit from continuing to run in the background and significantly diminish the usefulness of our location-based developer insights. We strongly recommend not pausing LocationKit.
 
-Key | Type | Description
---------- | --------- | ---------
-Street | kABPersonAddressStreetKey | Street address of the venue
-City | kABPersonAddressCityKey | City of the venue address
-State | kABPersonStateKey | State of the venue address
-ZIP | kABPersonZIPKey | ZIP Code of the venue address
-Country | kABPersonCountryKey | Country of the venue address
+###  > Resuming LocationKit
+
+In order to once again receive updates and get locations or places after you have paused it, you must resume LocationKit as follows:
+
+```objective_c
+NSError *error = [LocationKit resume];
+```
+
+If there was some issue starting LocationKit, the error will be non-`nil`

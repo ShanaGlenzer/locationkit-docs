@@ -4,6 +4,7 @@ pages:
   - iOS:
     - 'Quickstart': ios/getting-started.md
     - 'Usage': ios/using-locationkit.md
+    - 'Object Model': ios/object-model.md
     - 'API Reference': ios/api-reference.md
   - Android:
     - 'Quickstart': android/index.md
