@@ -6,12 +6,14 @@ pages:
     - 'Usage': ios/using-locationkit.md
     - 'Object Model': ios/object-model.md
     - 'API Reference': ios/api-reference.md
+    - 'Change Log': ios/changelog.md
   - Android:
     - 'Quickstart': android/index.md
   - HTTP:
     - 'Quickstart': no-such-page.md
   - About: about.md
 theme: readthedocs
+repo_url: https://github.com/socialradar/locationkit-docs
 markdown_extensions:
   - toc:
       permalink: True
