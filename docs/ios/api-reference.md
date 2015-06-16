@@ -2,6 +2,27 @@
 
 ***
 
+###- sharedInstance
+
+``+ (LocationKit *)sharedInstance``
+
+Enables LocationKit using an API token retrieved from the [developer portal](https://developer.socialradar.com).
+
+Optionally, you can specify an object that implements the [LocationKitDelegate](#locationkitdelegate) protocol; otherwise specify `nil`.
+
+**Arguments**
+
+| Argument | Description |
+| --- | --- |
+| *token* | The API token retrieved from the developer portal. |
+| *delegate* | The object that serves as the delegate for LocationKit (may be `nil`). |
+
+**Return value**
+
+`LocationKit`
+
+***
+
 ###- startWithApiToken
 
 ``- (LocationKit *)startWithApiToken:(NSString *)token andDelegate:(id <LocationKitDelegate>)delegate``
@@ -20,63 +41,6 @@ Optionally, you can specify an object that implements the [LocationKitDelegate](
 **Return value**
 
 `LocationKit`
-
-***
-
-###- sharedInstance
-
-``- (LocationKit *)sharedInstance``
-
-Enables LocationKit using an API token retrieved from the [developer portal](https://developer.socialradar.com).
-
-Optionally, you can specify an object that implements the [LocationKitDelegate](#locationkitdelegate) protocol; otherwise specify `nil`.
-
-**Arguments**
-
-| Argument | Description |
-| --- | --- |
-| *token* | The API token retrieved from the developer portal. |
-| *delegate* | The object that serves as the delegate for LocationKit (may be `nil`). |
-
-**Return value**
-
-`LocationKit`
-
-***
-
-###- getCurrentPlaceWithHandler
-
-``- (void)getCurrentPlaceWithHandler:(void (^)(LKPlace *place, NSError *error))handler``
-
-Retrieves the (place)[#lkplace] at the current location and handles the result in a block.
-
-**Arguments**
-
-| Argument | Description |
-| --- | --- |
-| *handler* | This block will be called with the results of the place retrieval. |
-
-**Return value**
-
-`nil`
-
-***
-
-###- getCurrentLocationWithHandler
-
-``- (void)getCurrentLocationWithHandler:(void (^)(CLLocation *location, NSError *error))handler``
-
-Retrieves the current location of the device, and handles the result in a block.
-
-**Arguments**
-
-| Argument | Description |
-| --- | --- |
-| *handler* | This block will be called with the results of the location retrieval. |
-
-**Return value**
-
-`nil`
 
 ***
 
@@ -113,6 +77,42 @@ If there was some error starting LocationKit, the error will be returned. Otherw
 **Return value**
 
 `NSError`
+
+***
+
+###- getCurrentPlaceWithHandler
+
+``- (void)getCurrentPlaceWithHandler:(void (^)(LKPlace *place, NSError *error))handler``
+
+Retrieves the (place)[#lkplace] at the current location and handles the result in a block.
+
+**Arguments**
+
+| Argument | Description |
+| --- | --- |
+| *handler* | This block will be called with the results of the place retrieval. |
+
+**Return value**
+
+`nil`
+
+***
+
+###- getCurrentLocationWithHandler
+
+``- (void)getCurrentLocationWithHandler:(void (^)(CLLocation *location, NSError *error))handler``
+
+Retrieves the current location of the device, and handles the result in a block.
+
+**Arguments**
+
+| Argument | Description |
+| --- | --- |
+| *handler* | This block will be called with the results of the location retrieval. |
+
+**Return value**
+
+`nil`
 
 ***
 
