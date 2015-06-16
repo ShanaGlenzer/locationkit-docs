@@ -32,7 +32,7 @@ LocationKit never surfaces dialog boxes, errors or notifications directly to a c
 Add the following to your Podfile then just run `pod install` from the root of your project
 
 ```
-pod 'LocationKit', '>= 2.0.0'
+pod 'LocationKit', '~> 2.0.0'
 ```
 
 #### Manual Download
