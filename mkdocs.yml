@@ -7,10 +7,11 @@ pages:
     - 'Object Model': ios/object-model.md
     - 'API Reference': ios/api-reference.md
     - 'Change Log': ios/changelog.md
+    - 'Sample App': ios/sample-app.md
   - Android:
     - 'Quickstart': android/index.md
   - HTTP:
-    - 'Quickstart': no-such-page.md
+    - 'Quickstart': http/index.md
   - About: about.md
 theme: readthedocs
 repo_url: https://github.com/socialradar/locationkit-docs

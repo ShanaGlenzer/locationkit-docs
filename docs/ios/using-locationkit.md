@@ -1,4 +1,6 @@
-##1. Create an account
+## Setting up
+
+<h3>1. Create an account</h3>
 
 The first thing you'll need to do is to [sign up for an account](http://developer.socialradar.com/#/signup). This will generate your Developer Portal account, and generate your API token.
 
@@ -6,7 +8,7 @@ Within the Developer Portal, you will be able to find your API token, and find i
 
 ***
 
-##2. Install the SDK
+<h3>2. Install the SDK</h3>
 
 **CocoaPods**
 
@@ -16,19 +18,18 @@ The easiest way to start using LocationKit in your project is by using [CocoaPod
 
 **Download LocationKit.framework**
 
-Alternatively, you can [download the client library], unzip the file, and drag and drop the `LocationKit.framework` file into your project under Frameworks.
+We do not yet have LocationKit available for manual download. If you are unable to use the CocoaPod and need a `.framework`, please contact the LocationKit team at [locationkit@socialradar.com](mailto:locationkit@socialradar.com) and we will send you the file.
 
 ***
 
-##3. Configure your project
+<h3>3. Configure your project</h3>
 
-1. Link to the following libraries to your project:
+Link to the following libraries to your project:
 
-    | Libraries |
-    | - |
-    | CoreLocation.framework |
-    | MapKit.framework |
-
+  | Libraries |
+  | - |
+  | CoreLocation.framework |
+  | MapKit.framework |
 
 **AdSupport (optional)**
 
@@ -38,13 +39,11 @@ In the past, Apple has [rejected some apps which use the AdSupport framework](ht
 
 Under the hood, we look to see if this framework is present and use the correct identifier in all cases.
 
-1. Enable **Location Updates** in the allowed **Background Modes**.
+<h3>4. Configure permissions</h3>
+
+Enable **Location Updates** in the allowed **Background Modes**.
 
 ![Background Modes](../img/background_modes.png)
-
-***
-
-##4. Configure permissions
 
 Add the following InfoPlist.strings file configuration (adjust the language as required by your app):
 
@@ -62,7 +61,9 @@ Add the following InfoPlist.strings file configuration (adjust the language as r
 ```
 ***
 
-##5. Initialize and start LocationKit
+## Control mechanisms
+
+<h3>Initialize and start LocationKit</h3>
 
 Include the LocationKit header in your app to get all the classes:
 
@@ -80,11 +81,31 @@ LocationKit will now start collecting location data.
 
 Optionally you can provide a `LocationKitDelegate` which will receive a constant stream of updates as they come in. Here we have supplied a `nil`. More on that below.
 
+<h3>Pausing LocationKit</h3>
+
+To pause LocationKit and stop receiving locations and visits, run the following:
+
+```objective_c
+[LocationKit pause];
+```
+
+Pausing LocationKit will prevent you from receiving any further updates to locations, places, visits, and so on so do so sparingly. It will prevent LocationKit from continuing to run in the background and significantly diminish the usefulness of our location-based developer insights. We strongly recommend not pausing LocationKit.
+
+<h3>Resuming LocationKit</h3>
+
+In order to once again receive updates and get locations or places after you have paused it, you must resume LocationKit as follows:
+
+```objective_c
+NSError *error = [LocationKit resume];
+```
+
+If there was some issue starting LocationKit, the error will be non-`nil`
+
 ***
 
 ## Single Location Requests
 
-### > Location Point
+<h3>Location Point</h3>
 
 To quickly obtain the user’s most recent location point, execute the following:
 
@@ -102,7 +123,7 @@ Single point requests do not increase battery consumption rates. Notice this poi
 
 You will quickly receive the user's most recent location point to the provided handler.
 
-### > Place
+<h3>Place</h3>
 
 To request the user's current place:
 
@@ -128,7 +149,7 @@ If they are in a place with no address or venue, both will be `nil` so plan your
 
 In order to receive streaming updates, you must provide an object which conforms to the [LocationKitDelegate](api-reference/#locationkitdelegate) protocol when launching LocationKit. LocationKit will then call the methods on your delegate whenever it detects the device has moved to a new location.
 
-### > Location Updates
+<h3>Location Updates</h3>
 
 As we detect the device moving to a new location and once we receive enough location data from the device to accurately determine the location of the device, we will call `didUpdateLocation` on your delegate.
 
@@ -155,7 +176,7 @@ LocationKit's `didUpdateLocation` will continue to receive location updates whil
 
 If you have any further questions or confusion about this (or anything) please post about it on our [Community](https://community.socialradar.com) and someone from our staff will get back to you ASAP to clarify.
 
-### > Visit start
+<h3>Visit start</h3>
 
 When we detect a visit has started we will call the `didStartVisit` method on your LocationKitDelegate.
 
@@ -173,7 +194,7 @@ It will receive an LKVisit object which contains information on the time of arri
 ```
 Note, an LKVisit also has a property called `departureDate` which of course would be `nil` for in `didStartVisit` (because without a crystal ball we cannot determine when the user will leave at the time they arrive!).
 
-### > Visit end
+<h3>Visit end</h3>
 
 When we detect that a visit to a place has ended, we will call the `didEndVisit` method on your delegate.
 
@@ -194,25 +215,3 @@ This delegate method will receive an LKVisit object which contains information a
 ```
 
 ***
-
-## Control mechanisms
-
-###  > Pausing LocationKit
-
-To pause LocationKit and stop receiving locations and visits, run the following:
-
-```objective_c
-[LocationKit pause];
-```
-
-Pausing LocationKit will prevent you from receiving any further updates to locations, places, visits, and so on so do so sparingly. It will prevent LocationKit from continuing to run in the background and significantly diminish the usefulness of our location-based developer insights. We strongly recommend not pausing LocationKit.
-
-###  > Resuming LocationKit
-
-In order to once again receive updates and get locations or places after you have paused it, you must resume LocationKit as follows:
-
-```objective_c
-NSError *error = [LocationKit resume];
-```
-
-If there was some issue starting LocationKit, the error will be non-`nil`
