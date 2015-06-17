@@ -13,6 +13,7 @@ pages:
   - HTTP:
     - 'Quickstart': http/index.md
   - About: about.md
+  - Support: support.md
 theme: readthedocs
 repo_url: https://github.com/socialradar/locationkit-docs
 markdown_extensions:
