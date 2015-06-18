@@ -23,20 +23,9 @@ Enable *Location Updates* in the allowed *Background Modes*.
 
 <h2>4. Configure permissions</h2>
 
-Add the following InfoPlist.strings file configuration (adjust the language as required by your app):
+Add the following to your Info.plist (adjust the language as required by your app):
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-    <dict>
-        <key>NSLocationUsageDescription</key>
-        <string>Change this line to inform the consumer about how location is being used.</string>
-        <key>NSLocationAlwaysUsageDescription</key>
-        <string>Change this line to inform the consumer about how location is being used in the background</string>
-    </dict>
-</plist>
-```
+![Info.plist](img/info_plist.png)
 
 ***
 

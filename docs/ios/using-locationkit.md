@@ -41,20 +41,11 @@ Enable **Location Updates** in the allowed **Background Modes**.
 
 ![Background Modes](../img/background_modes.png)
 
-Add the following InfoPlist.strings file configuration (adjust the language as required by your app):
+Add the following to your Info.plist (adjust the language as required by your app):
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-    <dict>
-        <key>NSLocationUsageDescription</key>
-        <string>Change this line to inform the consumer about how location is being used.</string>
-        <key>NSLocationAlwaysUsageDescription</key>
-        <string>Change this line to inform the consumer about how location is being used in the background</string>
-    </dict>
-</plist>
-```
+![Info.plist](img/info_plist.png)
+
+*Please note that the key `Privacy - Location Usage Description` autocompletes in Xcode; the key `NSLocationAlwaysUsageDescription` should be added manually.*
 
 If you are using Objective-C, this is it, you're done with setup! [Jump to Control Mechanisms](#control-mechanisms)
 
@@ -272,7 +263,7 @@ func locationKit(locationKit: LocationKit!, didStartVisit visit: LKVisit) {
     }
 }
 ```
-    
+
 Note, an LKVisit also has a property called `departureDate` which of course would be `nil` for in `didStartVisit` (because without a crystal ball we cannot determine when the user will leave at the time they arrive!).
 
 <h3>Visit end</h3>
