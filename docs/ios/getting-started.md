@@ -44,6 +44,7 @@ Add the following InfoPlist.strings file configuration (adjust the language as r
 
 Include the LocationKit header in your app to get all the classes:
 
+<h4>Objective-C</h4>
 ```objective_c
 #import <LocationKit/LocationKit.h>
 ```
@@ -51,10 +52,12 @@ Include the LocationKit header in your app to get all the classes:
 Enable LocationKit with the API token that you obtained earlier:
 
 ```objective_c
-[LocationKit startWithApiToken:@"your_api_token" andDelegate:nil];
+[[LocationKit sharedInstance] startWithApiToken:@"your_api_token" andDelegate:nil];
 ```
-
 LocationKit will now start collecting location data and is ready for you to request points or places.
+
+<h4>Swift</h4>
+*See the [usage](using-locationkit) section*
 
 ***
 

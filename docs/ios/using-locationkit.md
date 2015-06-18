@@ -6,8 +6,6 @@ The first thing you'll need to do is to [sign up for an account](http://develope
 
 Within the Developer Portal, you will be able to find your API token, and find insights into the location-based usage of your app with LocationKit.
 
-***
-
 <h3>2. Install the SDK</h3>
 
 **CocoaPods**
@@ -19,8 +17,6 @@ The easiest way to start using LocationKit in your project is by using [CocoaPod
 **Download LocationKit.framework**
 
 We do not yet have LocationKit available for manual download. If you are unable to use the CocoaPod and need a `.framework`, please contact the LocationKit team at [locationkit@socialradar.com](mailto:locationkit@socialradar.com) and we will send you the file.
-
-***
 
 <h3>3. Configure your project</h3>
 
@@ -59,6 +55,24 @@ Add the following InfoPlist.strings file configuration (adjust the language as r
     </dict>
 </plist>
 ```
+
+If you are using Objective-C, this is it, you're done with setup! [Jump to Control Mechanisms](#control-mechanisms)
+
+<h3>5. Create an Objective-C Bridging Header (Swift-only)</h3>
+
+Since LocationKit is an Objective-C library, you'll need to create an Objective-C bridging header in order to use it with Swift.
+
+1. Create a new Objective-C file to your project  
+![New File](../img/newfile.png)
+1. Give it any name you'd like. (e.g. 'Banana') For *File Type*, leave it at its default, Empty File and pick a place in your project to save it  
+![File Type](../img/filetype.png)
+1. When it prompts you to "configure an Objective-C bridging header" click *Create Bridging Header*  
+![Bridging Header](../img/bridgingheader.png)
+1. You can then delete the file you just created (e.g. 'Banana.m') but you'll notice a new file created called:  
+*{Your Project Name}-Bridging-Header.h*
+1. Now import LocationKit in the bridging header file `#import <LocationKit/LocationKit.h>`
+1. That's it! You can now use LocationKit in any of your Swift code:  
+
 ***
 
 ## Control mechanisms
@@ -73,20 +87,32 @@ Include the LocationKit header in your app to get all the classes:
 
 Enable LocationKit with the API token that you obtained earlier:
 
+<h6>Objective-C</h6>
 ```objective_c
-[LocationKit startWithApiToken:@"your_api_token" andDelegate:nil];
+[[LocationKit sharedInstance] startWithApiToken:@"your_api_token" andDelegate:nil];
+```
+
+<h6>Swift</h6>
+```swift
+LocationKit.sharedInstance().startWithApiToken("your_api_token", andDelegate:nil)
 ```
 
 LocationKit will now start collecting location data.
 
-Optionally you can provide a `LocationKitDelegate` which will receive a constant stream of updates as they come in. Here we have supplied a `nil`. More on that below.
+Optionally you can provide a `LocationKitDelegate` which will receive a constant stream of updates as they come in. Here we have supplied a `nil`. [More on that below.](#streaming-updates)
 
 <h3>Pausing LocationKit</h3>
 
 To pause LocationKit and stop receiving locations and visits, run the following:
 
+<h6>Objective-C</h6>
 ```objective_c
-[LocationKit pause];
+[[LocationKit sharedInstance] pause];
+```
+
+<h6>Swift</h6>
+```swift
+LocationKit.sharedInstance().pause()
 ```
 
 Pausing LocationKit will prevent you from receiving any further updates to locations, places, visits, and so on so do so sparingly. It will prevent LocationKit from continuing to run in the background and significantly diminish the usefulness of our location-based developer insights. We strongly recommend not pausing LocationKit.
@@ -95,11 +121,17 @@ Pausing LocationKit will prevent you from receiving any further updates to locat
 
 In order to once again receive updates and get locations or places after you have paused it, you must resume LocationKit as follows:
 
+<h6>Objective-C</h6>
 ```objective_c
-NSError *error = [LocationKit resume];
+NSError *error = [[LocationKit sharedInstance] resume];
 ```
 
-If there was some issue starting LocationKit, the error will be non-`nil`
+<h6>Swift</h6>
+```swift
+LocationKit.sharedInstance().resume()
+```
+
+If there was some issue resuming LocationKit, the error will be non-`nil`
 
 ***
 
@@ -109,14 +141,27 @@ If there was some issue starting LocationKit, the error will be non-`nil`
 
 To quickly obtain the user’s most recent location point, execute the following:
 
+<h6>Objective-C</h6>
 ```objective_c
-[LocationKit getCurrentLocationWithHandler:^(CLLocation *location, NSError *error) {
+[[LocationKit sharedInstance] getCurrentLocationWithHandler:^(CLLocation *location, NSError *error) {
     if (error == nil) {
         NSLog(@"%.6f, %.6f, %@", location.coordinate.latitude, location.coordinate.longitude, location.timestamp);
     } else {
         NSLog(@"Error: %@", error);
     }
 }];
+```
+
+<h6>Swift</h6>
+```swift
+LocationKit.sharedInstance().getCurrentLocationWithHandler { (location:CLLocation!, error:NSError!) -> Void in
+    if let loc = location {
+        print("got location (\(loc.coordinate.latitude), \(loc.coordinate.longitude))")
+    } else {
+        print("got a nil location")
+        print("error: %@", error)
+    }
+}
 ```
 
 Single point requests do not increase battery consumption rates. Notice this point is simply a `CLLocation` so if your code currently uses the Apple Location Manager, this will return an item in the same format. Here are the [Apple docs on CLLocation](https://developer.apple.com/library/ios/documentation/CoreLocation/Reference/CLLocation_Class/index.html)
@@ -128,13 +173,24 @@ You will quickly receive the user's most recent location point to the provided h
 To request the user's current place:
 
 ```objective_c
-[LocationKit getCurrentPlaceWithHandler:^(LKPlace *place, NSError *error) {
+[[LocationKit sharedInstance] getCurrentPlaceWithHandler:^(LKPlace *place, NSError *error) {
     if (error == nil) {
         NSLog(@"The user is in %@", place.address.locality);
     } else {
-        NSLog(@"Venues error %@", error);
+        NSLog(@"Error fetching place: %@", error);
     }
 }];
+```
+
+<h6>Swift</h6>
+```swift
+LocationKit.sharedInstance().getCurrentPlaceWithHandler { (place:LKPlace!, error:NSError!) -> Void in
+    if let place = place {
+        print("The user is in (\(place.address.locality))")
+    } else {
+        print("Error fetching place: %@", error)
+    }
+}
 ```
 
 This will return an LKPlace object. This place includes data about the user's current location.
@@ -155,11 +211,19 @@ As we detect the device moving to a new location and once we receive enough loca
 
 So your delegate could have a method that looks like:
 
+<h6>Objective-C</h6>
 ```objective_c
 - (void)locationKit:(LocationKit *)locationKit didUpdateLocation:(CLLocation *)location {
     NSLog(@"The user has moved and their location is now (%.6f, %.6f)",
           location.coordinate.latitude,
           location.coordinate.longitude);
+}
+```
+
+<h6>Swift</h6>
+```swift
+func locationKit(locationKit: LocationKit!, didUpdateLocation location: CLLocation!) {
+    print("The user has moved and their location is now (\(location.coordinate.latitude), \(location.coordinate.longitude))")
 }
 ```
 
@@ -187,11 +251,28 @@ We detect a visit start when we have gathered enough location data to identify:
 
 It will receive an LKVisit object which contains information on the time of arrival and the place to which this visit refers. For example:
 
+<h6>Objective-C</h6>
 ```objective_c
 - (void)locationKit:(LocationKit *)locationKit didStartVisit:(LKVisit *)visit {
     NSLog(@"LocationKit detected that a visit started at %@ to %@", visit.arrivalDate, visit.place.venue.name);
 }
 ```
+
+<h6>Swift</h6>
+```swift
+func locationKit(locationKit: LocationKit!, didStartVisit visit: LKVisit) {
+    if let arrival = visit.arrivalDate {
+        print("visit started at %@", arrival)
+    }
+    print("in zip code \(visit.place.address.postalCode)")
+
+    // Some places have a venue, some do not.
+    if let venue = visit.place.venue {
+        print("at venue named \(venue.name)")
+    }
+}
+```
+    
 Note, an LKVisit also has a property called `departureDate` which of course would be `nil` for in `didStartVisit` (because without a crystal ball we cannot determine when the user will leave at the time they arrive!).
 
 <h3>Visit end</h3>
@@ -205,12 +286,28 @@ We are constantly tweaking the criteria to determine that a visit has ended, so 
 
 This delegate method will receive an LKVisit object which contains information about the time of arrival, departure, and the place to which that visit refers. For example:
 
+<h6>Objective-C</h6>
 ```objective_c
 - (void)locationKit:(LocationKit *)locationKit didEndVisit:(LKVisit *)visit {
     NSLog(@"LocationKit detected that a visit occurred from %@ to %@ at %@",
           visit.arrivalDate,
           visit.departureDate,
           visit.place.venue.name);
+}
+```
+
+<h6>Swift</h6>
+```swift
+func locationKit(locationKit: LocationKit!, didEndVisit visit: LKVisit) {
+    if let departure = visit.departureDate {
+        print("visit ended at %@", departure)
+    }
+    print("in zip code \(visit.place.address.postalCode)")
+
+    // Some places have a venue, some do not.
+    if let venue = visit.place.venue {
+        print("at venue named \(venue.name)")
+    }
 }
 ```
 
