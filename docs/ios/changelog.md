@@ -1,5 +1,10 @@
 <h1>Change Log</h1>
 
+## 2.0.3
+<h4>June 18, 2015</h4>
+
+* Fixes a critical bug in 2.0.2
+
 ## 2.0.2
 <h4>June 18, 2015</h4>
 
