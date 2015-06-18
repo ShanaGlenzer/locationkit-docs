@@ -20,6 +20,8 @@ We do not yet have LocationKit available for manual download. If you are unable 
 
 <h3>3. Configure your project</h3>
 
+**Link external libraries**
+
 Link to the following libraries to your project:
 
   | Libraries |
@@ -101,7 +103,7 @@ LocationKit will now start collecting location data.
 
 Optionally you can provide a `LocationKitDelegate` which will receive a constant stream of updates as they come in. Here we have supplied a `nil`. [More on that below.](#streaming-updates)
 
-<h3>Pausing LocationKit</h3>
+<h3>Pause LocationKit</h3>
 
 To pause LocationKit and stop receiving locations and visits, run the following:
 
@@ -117,7 +119,7 @@ LocationKit.sharedInstance().pause()
 
 Pausing LocationKit will prevent you from receiving any further updates to locations, places, visits, and so on so do so sparingly. It will prevent LocationKit from continuing to run in the background and significantly diminish the usefulness of our location-based developer insights. We strongly recommend not pausing LocationKit.
 
-<h3>Resuming LocationKit</h3>
+<h3>Resume LocationKit</h3>
 
 In order to once again receive updates and get locations or places after you have paused it, you must resume LocationKit as follows:
 
